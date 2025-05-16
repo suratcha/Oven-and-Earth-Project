@@ -6,9 +6,9 @@ export default function Header() {
           Oven & Earth
         </div>
         <nav className='space-x-6 flex items-center'>
-          <a href='/' className='font-bold text-[#FFF9F4] text-xl hover:text-pink-200 hover:underline transition duration-200'>Home</a>
-          <a href='/menu' className='font-bold text-[#FFF9F4] text-xl hover:text-pink-200 hover:underline transition duration-200'>Menu</a>
-          <a href='/cart'className='flex items-center hover:opacity-80 transition duration-200'>
+          <a href='/' className='font-bold text-[#FFF9F4] text-xl hover:text-caramel hover:scale-105 hover:underline transition duration-200'>Home</a>
+          <a href='/menu' className='font-bold text-[#FFF9F4] text-xl hover:text-caramel hover:scale-105 hover:underline transition duration-200'>Menu</a>
+          <a href='/cart'className='flex items-center hover:opacity-75 hover:scale-105 transition duration-200'>
             <img src='Cart.png' alt='Cart'className='w-12 h-12 object-contain' />
           </a>
         </nav>

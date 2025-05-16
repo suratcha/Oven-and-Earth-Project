@@ -24,7 +24,8 @@ module.exports = {
         matcha : '#6E8B61',
         strawberry : '#D96C6C',
         grey : '#C9B9A0', 
-        milk : '#fffcfa'       
+        milk : '#fffcfa',
+        caramel: '#D8BFAA',    
       },
     },
   },
