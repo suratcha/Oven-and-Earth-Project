@@ -39,7 +39,7 @@ export default function Home() {
           </Link>
         </div>
         <div className="bg-white text-biscuit shadow-md text-2xl font-semibold text-center mb-8 rounded-xl max-w-40 h-auto mx-auto justify-items-center">
-          Reccommend
+          Recommend
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 max-w-4xl mx-auto justify-items-center text-center mb-8">
           {items.map((item) => (
