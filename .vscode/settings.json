@@ -1,0 +1,5 @@
+{
+    "explorer.autoRevealExclude": {
+        "**/.git": false
+    }
+}
