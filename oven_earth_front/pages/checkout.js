@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import axios from "axios";
 
 export default function CheckoutPage() {
   const router = useRouter();
@@ -21,13 +22,17 @@ export default function CheckoutPage() {
       } catch (error) {
         console.error("Failed to parse buyNow item", error);
       }
-    if (router.query.cart) {
-      setCartItems(JSON.parse(router.query.cart));
-    }
+    } else if (router.query.cart) {
+      try {
+        setCartItems(JSON.parse(cart));
+      } catch (err) {
+        console.error("Failed to parse cart data", err);
+      }
     } else {
-      fetch("http://localhost:8000/api/cart/")
-        .then((res) => res.json())
-        .then((data) => setCartItems(data));
+      axios
+        .get("http://localhost:8000/api/cart/")
+        .then((res) => setCartItems(res.data))
+        .catch((err) => console.error("Load cart failed", err));
     }
   }, [router.query]);
 
@@ -39,52 +44,18 @@ export default function CheckoutPage() {
   const handleCheckout = async (e) => {
     e.preventDefault();
 
-    if (!customerName.trim()) {
-      alert("กรุณากรอกชื่อผู้สั่งซื้อ");
-      return;
-    }
-
-    if (!phone.trim()) {
-      alert("กรุณากรอกเบอร์โทรศัพท์");
-      return;
-    }
-    if (!/^[0-9]{8,15}$/.test(phone)) {
-      alert("กรุณากรอกเบอร์โทรให้ถูกต้อง (ตัวเลข 8-15 หลัก)");
-      return;
-    }
-
-    if (!email.trim()) {
-      alert("กรุณากรอกอีเมล");
-      return;
-    }
-    if (!/\S+@\S+\.\S+/.test(email)) {
-      alert("กรุณากรอกอีเมลให้ถูกต้อง เช่น test@example.com");
-      return;
-    }
-
-    if (!address.trim()) {
-      alert("กรุณากรอกที่อยู่สำหรับจัดส่ง");
-      return;
-    }
-
-    if (!deliveryMethod.trim()) {
-      alert("กรุณาเลือกวิธีการจัดส่ง");
-      return;
-    }
-
-    if (!paymentMethod.trim()) {
-      alert("กรุณาเลือกวิธีการชำระเงิน");
-      return;
-    }
-
-    if (!Array.isArray(cartItems) || cartItems.length === 0) {
-      alert("ไม่มีสินค้าที่จะสั่งซื้อ");
-      return;
-    }
-    if (!cartItems || cartItems.length === 0) {
-      alert("ไม่มีสินค้าในตะกร้า กรุณากลับไปเลือกสินค้าใหม่");
-      return;
-    }
+    if (!customerName.trim()) return alert("กรุณากรอกชื่อผู้สั่งซื้อ");
+    if (!phone.trim()) return alert("กรุณากรอกเบอร์โทรศัพท์");
+    if (!/^[0-9]{8,15}$/.test(phone))
+      return alert("กรุณากรอกเบอร์โทรให้ถูกต้อง (ตัวเลข 8-15 หลัก)");
+    if (!email.trim()) return alert("กรุณากรอกอีเมล");
+    if (!/\S+@\S+\.\S+/.test(email))
+      return alert("กรุณากรอกอีเมลให้ถูกต้อง เช่น test@example.com");
+    if (!address.trim()) return alert("กรุณากรอกที่อยู่สำหรับจัดส่ง");
+    if (!deliveryMethod.trim()) return alert("กรุณาเลือกวิธีการจัดส่ง");
+    if (!paymentMethod.trim()) return alert("กรุณาเลือกวิธีการชำระเงิน");
+    if (!Array.isArray(cartItems) || cartItems.length === 0)
+      return alert("ไม่มีสินค้าในตะกร้า กรุณากลับไปเลือกสินค้าใหม่");
 
     const orderData = {
       customer_name: customerName,
@@ -102,33 +73,36 @@ export default function CheckoutPage() {
       })),
     };
 
-     console.log("✅ orderData ที่จะส่ง:", orderData);
+    console.log("✅ orderData ที่จะส่ง:", orderData);
 
-    const res = await fetch("http://localhost:8000/api/orders/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(orderData),
-    });
+    try {
+      const res = await axios.post(
+        "http://localhost:8000/api/orders/",
+        orderData
+      );
+      if (res.status === 201 || res.status === 200) {
+        alert("สั่งซื้อสำเร็จ 🎉");
 
-    if (res.ok) {
-      alert("สั่งซื้อสำเร็จ 🎉");
-      cartItems.forEach((item) => {
-        fetch(`http://localhost:8000/api/cart/${item.id}/`, {
-          method: "DELETE",
-        })
-          .then(() => console.log(`ลบ cart item id: ${item.id}`))
-          .catch((err) => console.error("ลบ cart ผิดพลาด", err));
-      });
-      setName("");
-      setPhone("");
-      setEmail("");
-      setAddress("");
-      setDeliveryMethod("");
-      setPaymentMethod("");
-      router.push("/");
-    } else {
+        await Promise.all(
+          cartItems.map((item) =>
+            axios
+              .delete(`http://localhost:8000/api/cart/${item.id}/`)
+              .then(() => console.log(`ลบ cart item id: ${item.id}`))
+              .catch((err) => console.error("ลบ cart ผิดพลาด", err))
+          )
+        );
+
+        setName("");
+        setPhone("");
+        setEmail("");
+        setAddress("");
+        setDeliveryMethod("");
+        setPaymentMethod("");
+        setCartItems([]);
+        router.push("/");
+      }
+    } catch (error) {
+      console.error("สั่งซื้อไม่สำเร็จ:", error);
       alert("เกิดข้อผิดพลาดในการสั่งซื้อ");
     }
   };
@@ -141,7 +115,10 @@ export default function CheckoutPage() {
         </h1>
         <div className="bg-white text-dark_cocoa rounded-3xl shadow p-6 mb-10">
           {cartItems.map((item) => (
-            <div key={item.id || item.product?.id} className="flex gap-6 border-b pb-4 mb-4">
+            <div
+              key={item.id || item.product?.id}
+              className="flex gap-6 border-b pb-4 mb-4"
+            >
               <img
                 src={(item.product?.image || item.image)?.replace(
                   "127.0.0.1",

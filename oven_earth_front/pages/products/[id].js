@@ -1,32 +1,35 @@
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
+import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import axios from "axios";
 
 export default function Product() {
   const router = useRouter();
   const { id } = router.query;
-  const [items, setitemss] = useState(null);
+  const [items, setItems] = useState(null);
   const [quantity, setQuantity] = useState(1);
 
   useEffect(() => {
     if (id) {
-      fetch(`http://localhost:8000/api/items/${id}/`)
-        .then((res) => res.json())
-        .then((data) => setitemss(data));
+      axios
+        .get(`http://localhost:8000/api/items/${id}/`)
+        .then((res) => setItems(res.data))
+        .catch((err) => {
+          console.error("โหลดสินค้าไม่สำเร็จ", err);
+        });
     }
   }, [id]);
 
-  const handleAddToCart = () => {
-    fetch('http://localhost:8000/api/cart/', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ product: items.id, quantity: quantity }),
-    }).then((res) => {
-      if (res.ok) {
-        router.push('/cart');
-      } else {
-        alert('Not Success');
-      }
+  const handleAddToCart = async () => {
+    const res = await axios.post("http://localhost:8000/api/cart/", {
+      product: items.id,
+      quantity: quantity,
     });
+
+    if (res.status === 201 || res.status === 200) {
+      router.push("/cart");
+    } else {
+      alert("ไม่สามารถเพิ่มสินค้าลงตะกร้าได้");
+    }
   };
 
   const handleBuyNow = () => {
@@ -40,7 +43,7 @@ export default function Product() {
     router.push({
       pathname: "/checkout",
       query: {
-        buyNow: JSON.stringify(buyNowItem),
+        buyNow: encodeURIComponent(JSON.stringify(buyNowItem)),
       },
     });
   };

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import axios from "axios";
 
 export default function CartPage() {
   const router = useRouter();
@@ -8,24 +9,31 @@ export default function CartPage() {
     fetchCart();
   }, []);
 
-  const fetchCart = () => {
-    fetch("http://localhost:8000/api/cart/")
-      .then((res) => res.json())
-      .then((data) => setCartItems(data));
+  const fetchCart = async () => {
+    try {
+      const res = await axios.get("http://localhost:8000/api/cart/");
+      setCartItems(res.data);
+    } catch (error) {
+      console.error("Error fetching cart:", error);
+    }
   };
 
-  const updateQuantity = (id, quantity) => {
-    fetch(`http://localhost:8000/api/cart/${id}/`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ quantity }),
-    }).then(fetchCart);
+  const updateQuantity = async (id, quantity) => {
+    try {
+      await axios.patch(`http://localhost:8000/api/cart/${id}/`, { quantity });
+      fetchCart();
+    } catch (error) {
+      console.error("Error updating quantity:", error);
+    }
   };
 
-  const removeItem = (id) => {
-    fetch(`http://localhost:8000/api/cart/${id}/`, {
-      method: "DELETE",
-    }).then(fetchCart);
+  const removeItem = async (id) => {
+    try {
+      await axios.delete(`http://localhost:8000/api/cart/${id}/`);
+      fetchCart();
+    } catch (error) {
+      console.error("Error removing item:", error);
+    }
   };
 
   const handleBuyNow = () => {
@@ -35,7 +43,8 @@ export default function CartPage() {
         quantity: item.quantity,
       })),
     };
-    alert('Order placed!');
+
+    alert("Order placed!");
     setCartItems([]);
     router.push({
       pathname: "/checkout",

@@ -8,14 +8,16 @@ export async function getServerSideProps() {
 }
 
 export default function Home() {
-  const [items, setitems] = useState([]);
+  const [items, setItems] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:8000/api/items/")
-      .then((res) => res.json())
-      .then((data) => {
-        const recommendItems = data.filter((items) => items.recommend === true);
-        setitems(recommendItems);
+    axios.get("http://localhost:8000/api/items/")
+      .then((res) => {
+        const recommendItems = res.data.filter((item) => item.recommend === true);
+        setItems(recommendItems);
+      })
+      .catch((err) => {
+        console.error("Error loading items:", err);
       });
   }, []);
 
