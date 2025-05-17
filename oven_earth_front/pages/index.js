@@ -3,8 +3,13 @@ import Link from "next/link";
 import axios from "axios";
 
 export async function getServerSideProps() {
-  const res = await axios.get("http://localhost:8000/api/items/");
-  return { props: { item: res.data } };
+  try {
+    const res = await axios.get("http://localhost:8000/api/items/");
+    return { props: { item: res.data } };
+  } catch (error) {
+    console.error("SSR fetch error:", error.message);
+    return { props: { item: [] } }; // หรือ redirect / error page
+  }
 }
 
 export default function Home() {
