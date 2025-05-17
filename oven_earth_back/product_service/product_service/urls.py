@@ -20,7 +20,6 @@ from rest_framework import routers
 from product_management.views import BakeryItemViewSet
 from cart_management.views import CartItemViewSet
 from order_management.views import OrderViewSet
-from dashboard.views import admin_dashboard
 from django.conf import settings                      
 from django.conf.urls.static import static
 
@@ -30,9 +29,6 @@ router.register(r'cart', CartItemViewSet)
 router.register(r'orders', OrderViewSet)
 
 urlpatterns = [
-    path('jet/', include('jet.urls', 'jet')),
-    path('jet/dashboard/', include('jet.dashboard.urls', 'jet-dashboard')),
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
-    path('admin-dashboard/', admin_dashboard, name='admin-dashboard'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

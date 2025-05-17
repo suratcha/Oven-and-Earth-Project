@@ -1,6 +1,10 @@
+version: "3.9"
+
 services:
   backend:
     build: ./oven_earth_back/product_service
+    volumes:
+      - ./oven_earth_back/product_service:/app
     ports:
       - "8000:8000"
 

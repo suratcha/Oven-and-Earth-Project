@@ -1,4 +1,4 @@
-FROM python:3.10
+FROM python:3.11
 
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
@@ -6,10 +6,7 @@ ENV PYTHONUNBUFFERED 1
 WORKDIR /app
 
 COPY requirements.txt /app/
-RUN pip install --upgrade pip && \
-    pip uninstall -y django-jet || true && \
-    rm -rf /usr/local/lib/python*/site-packages/jet && \
-    pip install --no-cache-dir -r requirements.txt
+RUN pip install -r requirements.txt
 
 COPY . /app/
 
