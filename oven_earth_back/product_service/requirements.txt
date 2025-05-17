@@ -1,0 +1,5 @@
+Django==3.2
+djangorestframework
+django-jet @ https://github.com/geex-arts/django-jet/archive/refs/tags/1.0.8.zip
+django-cors-headers
+django-filter
