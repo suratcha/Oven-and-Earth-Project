@@ -24,7 +24,7 @@ export default function CheckoutPage() {
       }
     } else if (router.query.cart) {
       try {
-        setCartItems(JSON.parse(cart));
+        setCartItems(JSON.parse(router.query.cart));
       } catch (err) {
         console.error("Failed to parse cart data", err);
       }
@@ -117,7 +117,7 @@ export default function CheckoutPage() {
           {cartItems.map((item) => (
             <div
               key={item.id || item.product?.id}
-              className="flex gap-6 border-b pb-4 mb-4"
+              className="flex flex-col md:flex-row gap-6 border-b pb-4 mb-4"
             >
               <img
                 src={(item.product?.image || item.image)?.replace(
@@ -125,7 +125,7 @@ export default function CheckoutPage() {
                   "localhost"
                 )}
                 alt={item.product?.name || item.name}
-                className="w-48 h-48 object-cover rounded-xl"
+                className="w-48 h-48 object-cover rounded-xl self-center"
               />
               <div className="flex-1">
                 <p className="font-semibold text-xl leading-loose">

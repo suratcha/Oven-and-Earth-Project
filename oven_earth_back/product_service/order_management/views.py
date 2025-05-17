@@ -12,7 +12,7 @@ class OrderViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(data=request.data)
 
         if not serializer.is_valid():
-            print("❌ Order Error:", serializer.errors)
+            print("Order Error:", serializer.errors)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
         self.perform_create(serializer)

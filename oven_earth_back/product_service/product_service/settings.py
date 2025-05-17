@@ -35,6 +35,8 @@ CORS_ALLOWED_ORIGINS = [
 # Application definition
 
 INSTALLED_APPS = [
+    'jet.dashboard',
+    'jet',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -46,6 +48,7 @@ INSTALLED_APPS = [
     'product_management',
     'cart_management',
     'order_management',
+    'dashboard.apps.DashboardConfig',
     'rest_framework',
 ]
 

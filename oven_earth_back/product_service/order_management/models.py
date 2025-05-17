@@ -3,6 +3,12 @@ from product_management.models import BakeryItem
 
 # Create your models here.
 class Order(models.Model):
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('in_transit', 'In Transit'),
+        ('delivered', 'Delivered'),
+    ]
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
     customer_name = models.CharField(max_length=100)
     phone = models.CharField(max_length=20)
     email = models.EmailField()
@@ -14,7 +20,7 @@ class Order(models.Model):
 
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, related_name='items', on_delete=models.CASCADE)
-    product = models.ForeignKey(BakeryItem, on_delete=models.CASCADE)
+    product = models.ForeignKey(BakeryItem, on_delete=models.CASCADE, null=True, blank=True)
     product_name = models.CharField(max_length=255)
     price = models.DecimalField(max_digits=6, decimal_places=2)
-    quantity = models.IntegerField()
+    quantity = models.IntegerField(default=1)

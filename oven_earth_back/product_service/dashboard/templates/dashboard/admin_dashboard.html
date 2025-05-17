@@ -1,0 +1,14 @@
+{% extends 'admin/base_site.html' %}
+{% block content %}
+  <h1>📊 Admin Dashboard</h1>
+  <p><strong>Today's Orders:</strong> {{ today_orders_count }}</p>
+  <p><strong>Delivered Today:</strong> {{ delivered_today_count }}</p>
+  <p><strong>Total Sales:</strong> {{ total_sales }} THB</p>
+
+  <h2>🏆 Best Sellers</h2>
+  <ul>
+    {% for item in best_sellers %}
+      <li>{{ item.product_name }} - {{ item.quantity }} sold</li>
+    {% endfor %}
+  </ul>
+{% endblock %}
