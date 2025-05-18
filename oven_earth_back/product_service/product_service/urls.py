@@ -22,6 +22,7 @@ from cart_management.views import CartItemViewSet
 from order_management.views import OrderViewSet
 from django.conf import settings                      
 from django.conf.urls.static import static
+from django.http import HttpResponse
 
 router = routers.DefaultRouter()
 router.register(r'items', BakeryItemViewSet)
@@ -31,4 +32,5 @@ router.register(r'orders', OrderViewSet)
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
+    path('', lambda request: HttpResponse('Hello')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
