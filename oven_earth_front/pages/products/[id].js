@@ -7,11 +7,12 @@ export default function Product() {
   const { id } = router.query;
   const [items, setItems] = useState(null);
   const [quantity, setQuantity] = useState(1);
+  const api = process.env.NEXT_PUBLIC_API_URL
 
   useEffect(() => {
     if (id) {
       axios
-        .get(`http://localhost:8000/api/items/${id}/`)
+        .get(`${api}/items/${id}/`)
         .then((res) => setItems(res.data))
         .catch((err) => {
           console.error("โหลดสินค้าไม่สำเร็จ", err);
@@ -20,7 +21,7 @@ export default function Product() {
   }, [id]);
 
   const handleAddToCart = async () => {
-    const res = await axios.post("http://localhost:8000/api/cart/", {
+    const res = await axios.post(`${api}/cart/`, {
       product: items.id,
       quantity: quantity,
     });

@@ -5,13 +5,15 @@ import axios from "axios";
 export default function CartPage() {
   const router = useRouter();
   const [cartItems, setCartItems] = useState([]);
+  const api = process.env.NEXT_PUBLIC_API_URL
+
   useEffect(() => {
     fetchCart();
   }, []);
 
   const fetchCart = async () => {
     try {
-      const res = await axios.get("http://localhost:8000/api/cart/");
+      const res = await axios.get(`${api}/cart/`);
       setCartItems(res.data);
     } catch (error) {
       console.error("Error fetching cart:", error);
@@ -20,7 +22,7 @@ export default function CartPage() {
 
   const updateQuantity = async (id, quantity) => {
     try {
-      await axios.patch(`http://localhost:8000/api/cart/${id}/`, { quantity });
+      await axios.patch(`${api}/cart/${id}/`, { quantity });
       fetchCart();
     } catch (error) {
       console.error("Error updating quantity:", error);
@@ -29,7 +31,7 @@ export default function CartPage() {
 
   const removeItem = async (id) => {
     try {
-      await axios.delete(`http://localhost:8000/api/cart/${id}/`);
+      await axios.delete(`${api}/cart/${id}/`);
       fetchCart();
     } catch (error) {
       console.error("Error removing item:", error);

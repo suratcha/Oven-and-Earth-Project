@@ -3,8 +3,9 @@ import Link from "next/link";
 import axios from "axios";
 
 export async function getServerSideProps() {
+  const api = process.env.NEXT_PUBLIC_API_URL
   try {
-    const res = await axios.get("http://localhost:8000/api/items/");
+    const res = await axios.get(`${api}/items/`);
     return { props: { item: res.data } };
   } catch (error) {
     console.error("SSR fetch error:", error.message);
@@ -14,9 +15,10 @@ export async function getServerSideProps() {
 
 export default function Home() {
   const [items, setItems] = useState([]);
+  const api = process.env.NEXT_PUBLIC_API_URL
 
   useEffect(() => {
-    axios.get("http://localhost:8000/api/items/")
+    axios.get(`${api}/items/`)
       .then((res) => {
         const recommendItems = res.data.filter((item) => item.recommend === true);
         setItems(recommendItems);

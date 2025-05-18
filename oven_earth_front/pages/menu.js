@@ -4,10 +4,11 @@ import axios from "axios";
 
 export default function MenuPage() {
   const [items, setItems] = useState([]);
+  const api = process.env.NEXT_PUBLIC_API_URL
 
   useEffect(() => {
     axios
-      .get("http://localhost:8000/api/items/")
+      .get(`${api}/items/`)
       .then((res) => {
         const sorted = res.data.sort((a, b) => {
           if (a.recommend && !b.recommend) return -1;

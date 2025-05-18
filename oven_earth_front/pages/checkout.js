@@ -11,6 +11,7 @@ export default function CheckoutPage() {
   const [address, setAddress] = useState("");
   const [deliveryMethod, setDeliveryMethod] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("");
+  const api = process.env.NEXT_PUBLIC_API_URL
 
   useEffect(() => {
     const { buyNow } = router.query;
@@ -30,7 +31,7 @@ export default function CheckoutPage() {
       }
     } else {
       axios
-        .get("http://localhost:8000/api/cart/")
+        .get(`${api}/cart/`)
         .then((res) => setCartItems(res.data))
         .catch((err) => console.error("Load cart failed", err));
     }
@@ -77,7 +78,7 @@ export default function CheckoutPage() {
 
     try {
       const res = await axios.post(
-        "http://localhost:8000/api/orders/",
+        `${api}/orders/`,
         orderData
       );
       if (res.status === 201 || res.status === 200) {
@@ -86,7 +87,7 @@ export default function CheckoutPage() {
         await Promise.all(
           cartItems.map((item) =>
             axios
-              .delete(`http://localhost:8000/api/cart/${item.id}/`)
+              .delete(`${api}/cart/${item.id}/`)
               .then(() => console.log(`ลบ cart item id: ${item.id}`))
               .catch((err) => console.error("ลบ cart ผิดพลาด", err))
           )
